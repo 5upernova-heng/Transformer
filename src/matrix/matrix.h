@@ -1,0 +1,59 @@
+#ifndef C_TRANSFORMER_MATRIX_H
+#define C_TRANSFORMER_MATRIX_H
+#define POSITIONAL_ENCODING_BASE 10000
+
+#include <vector>
+#include <string>
+#include <format>
+
+class Mat2D {
+public:
+    Mat2D();
+
+    Mat2D(int w, int h);
+
+    Mat2D(Mat2D const &mat);
+
+    explicit Mat2D(const std::pair<int, int> &sizes);
+
+    Mat2D(std::initializer_list<std::initializer_list<double>> array);
+
+    ~Mat2D();
+
+    static void add(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
+
+    static void multiply(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
+
+    static void concat(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
+
+    static void concat(const std::vector<std::shared_ptr<Mat2D>> &mats, Mat2D &dest);
+
+    static void transpose(const Mat2D &mat1, const Mat2D &dest);
+
+    void initData();
+
+    void positionalEncode() const;
+
+    void layerNorm() const;
+
+    void mask() const;
+
+    void softmax() const;
+
+    void print() const;
+
+    void print(int n) const;
+
+    void operator+=(double bias) const;
+
+    void operator*=(double scale) const;
+
+    void operator/=(double scale) const;
+
+    bool operator==(const Mat2D &mat) const;
+
+    std::pair<int, int> sizes;
+    std::shared_ptr<std::shared_ptr<double[]>[]> data;
+};
+
+#endif //C_TRANSFORMER_MATRIX_H
