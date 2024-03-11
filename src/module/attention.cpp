@@ -1,7 +1,7 @@
 #include "attention.h"
 
-Attention::Attention(int n, int d_model, int dk, int dv, int h, bool mask)
-        : n(n), d_model(d_model), mask(mask), dk(dk), dv(dv), h(h) {
+Attention::Attention(int n, int d_model, int dk, int dv, int h)
+        : n(n), d_model(d_model), dk(dk), dv(dv), h(h) {
     for (int i = 0; i < h; i++) {
         Wq.push_back(std::make_shared<Mat2D>(d_model, dk));
         Wk.push_back(std::make_shared<Mat2D>(d_model, dk));
@@ -17,7 +17,7 @@ Attention::Attention(int n, int d_model, int dk, int dv, int h, bool mask)
 /*
  * (n, d_model) -> (n, d_v)
  */
-void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, int index) {
+void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, int index, bool mask) {
     if (index < 0 or index >= Q.size()) {
         printf("Channel number h out of range\n");
     }
@@ -34,15 +34,15 @@ void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, in
         out.mask();
 }
 
-void Attention::MultiheadAttention(Mat2D &input, Mat2D &output) {
-    Attention::MultiheadAttention(input, input, input, output);
+void Attention::MultiheadAttention(Mat2D &input, Mat2D &output, bool mask) {
+    Attention::MultiheadAttention(input, input, input, output, mask);
 }
 
-void Attention::MultiheadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &output) {
+void Attention::MultiheadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &output, bool mask) {
     std::vector<std::shared_ptr<Mat2D>> outputs;
     for (int i = 0; i < h; i++) {
         outputs.push_back(std::make_shared<Mat2D>(n, dv));
-        SingleHeadAttention(q, k, v, *outputs[i], i);
+        SingleHeadAttention(q, k, v, *outputs[i], i, mask);
     }
     Mat2D concatenated(n, dv * h);
     Mat2D::concat(outputs, concatenated);
