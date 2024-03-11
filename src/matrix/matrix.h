@@ -2,6 +2,7 @@
 #define C_TRANSFORMER_MATRIX_H
 #define POSITIONAL_ENCODING_BASE 10000
 
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <format>
@@ -39,6 +40,8 @@ public:
     void mask() const;
 
     void softmax() const;
+
+    void ReLU() const;
 
     void print(int n = 2) const;
 

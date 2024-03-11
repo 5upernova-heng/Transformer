@@ -236,6 +236,14 @@ void Mat2D::softmax() const {
     }
 }
 
+void Mat2D::ReLU() const {
+    for (int i = 0; i < sizes.first; i++) {
+        for (int j = 0; j < sizes.second; j++) {
+            data[i][j] = std::max(data[i][j], 0.0);
+        }
+    }
+}
+
 void Mat2D::operator+=(double bias) const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
