@@ -12,9 +12,11 @@ public:
 
     Attention(int n, int d_model, int dk, int dv, int h, bool mask = false);
 
-    void SingleHeadAttention(Mat2D &in, Mat2D &out, int index);
+    void SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, int index);
 
     void MultiheadAttention(Mat2D &input, Mat2D &output);
+
+    void MultiheadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &output);
 
     ~Attention();
 

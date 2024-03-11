@@ -17,13 +17,13 @@ Attention::Attention(int n, int d_model, int dk, int dv, int h, bool mask)
 /*
  * (n, d_model) -> (n, d_v)
  */
-void Attention::SingleHeadAttention(Mat2D &in, Mat2D &out, int index) {
+void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, int index) {
     if (index < 0 or index >= Q.size()) {
         printf("Channel number h out of range\n");
     }
-    Mat2D::multiply(in, *Wq[index], *Q[index]);
-    Mat2D::multiply(in, *Wk[index], *K[index]);
-    Mat2D::multiply(in, *Wv[index], *V[index]);
+    Mat2D::multiply(q, *Wq[index], *Q[index]);
+    Mat2D::multiply(k, *Wk[index], *K[index]);
+    Mat2D::multiply(v, *Wv[index], *V[index]);
     Mat2D attention_matrix(n, n), K_T(dk, n);
     Mat2D::transpose(*K[index], K_T);
     Mat2D::multiply(*Q[index], K_T, attention_matrix);
@@ -35,10 +35,14 @@ void Attention::SingleHeadAttention(Mat2D &in, Mat2D &out, int index) {
 }
 
 void Attention::MultiheadAttention(Mat2D &input, Mat2D &output) {
+    Attention::MultiheadAttention(input, input, input, output);
+}
+
+void Attention::MultiheadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &output) {
     std::vector<std::shared_ptr<Mat2D>> outputs;
     for (int i = 0; i < h; i++) {
         outputs.push_back(std::make_shared<Mat2D>(n, dv));
-        SingleHeadAttention(input, *outputs[i], i);
+        SingleHeadAttention(q, k, v, *outputs[i], i);
     }
     Mat2D concatenated(n, dv * h);
     Mat2D::concat(outputs, concatenated);
