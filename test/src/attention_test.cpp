@@ -5,7 +5,7 @@
 namespace {
     TEST(ModuleTest, TransformerTest) {
         Mat2D input, output;
-        Attention attention(input, output);
-        attention.MultiheadAttention();
+        Attention attention(input.sizes.first, input.sizes.second, 64, 64, 8, false);
+        attention.MultiheadAttention(input, output);
     }
 }

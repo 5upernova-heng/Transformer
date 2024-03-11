@@ -1,24 +1,20 @@
 #ifndef TRANSFORMER_ATTENTION_H
 #define TRANSFORMER_ATTENTION_H
 
-#define DK 64
-#define DV 64
-#define H 8
-
 #include "../matrix/matrix.h"
 
 class Attention {
 public:
-    int n, d_model;
+    int n, d_model, dk, dv, h;
     std::vector<std::shared_ptr<Mat2D>> Wq, Wk, Wv, Q, K, V;
-    Mat2D &input, output;
     std::shared_ptr<Mat2D> Wo;
+    bool mask;
 
-    Attention(Mat2D &input, Mat2D &output);
+    Attention(int n, int d_model, int dk, int dv, int h, bool mask = false);
 
-    void SingleHeadAttention(Mat2D &in, Mat2D &out, int h);
+    void SingleHeadAttention(Mat2D &in, Mat2D &out, int index);
 
-    void MultiheadAttention();
+    void MultiheadAttention(Mat2D &input, Mat2D &output);
 
     ~Attention();
 
