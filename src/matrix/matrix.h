@@ -40,9 +40,7 @@ public:
 
     void softmax() const;
 
-    void print() const;
-
-    void print(int n) const;
+    void print(int n = 2) const;
 
     void operator+=(double bias) const;
 

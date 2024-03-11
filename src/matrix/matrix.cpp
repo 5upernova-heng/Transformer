@@ -275,9 +275,6 @@ bool Mat2D::operator==(const Mat2D &mat) const {
     return true;
 }
 
-void Mat2D::print() const {
-    print(2);
-}
 
 void Mat2D::print(int n) const {
     for (int i = 0; i < sizes.first; i++) {
