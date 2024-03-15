@@ -2,3 +2,8 @@
   path = test/lib/googletest
   url = https://github.com/google/googletest.git
   branch = master
+
+[submodule "python/pytorch-transformer"]
+	path = python/pytorch-transformer
+	url = https://github.com/5upernova-heng/pytorch-transformer.git
+	branch = main
