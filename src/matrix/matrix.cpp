@@ -215,7 +215,7 @@ void Mat2D::layerNorm() const {
 void Mat2D::mask() const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = i + 1; j < sizes.second; j++) {
-            data[i][j] = -(double) INFINITY;
+            data[i][j] = -(double) 10000;
         }
     }
 }
@@ -287,7 +287,7 @@ bool Mat2D::operator==(const Mat2D &mat) const {
 void Mat2D::print(int n) const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            printf("%.*lf\t", n, data[i][j]);
+            printf("%.*e ", n, data[i][j]);
         }
         printf("\n");
     }

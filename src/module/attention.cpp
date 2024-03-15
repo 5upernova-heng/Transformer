@@ -1,14 +1,14 @@
 #include "attention.h"
 
-Attention::Attention(int n, int d_model, int dk, int dv, int h)
-        : n(n), d_model(d_model), dk(dk), dv(dv), h(h) {
+Attention::Attention(int n, int m, int d_model, int dk, int dv, int h)
+        : n(n), m(m), d_model(d_model), dk(dk), dv(dv), h(h) {
     for (int i = 0; i < h; i++) {
         Wq.push_back(std::make_shared<Mat2D>(d_model, dk));
         Wk.push_back(std::make_shared<Mat2D>(d_model, dk));
         Wv.push_back(std::make_shared<Mat2D>(d_model, dv));
         Q.push_back(std::make_shared<Mat2D>(n, dk));
-        K.push_back(std::make_shared<Mat2D>(n, dk));
-        V.push_back(std::make_shared<Mat2D>(n, dv));
+        K.push_back(std::make_shared<Mat2D>(m, dk));
+        V.push_back(std::make_shared<Mat2D>(m, dv));
     }
     Wo = std::make_shared<Mat2D>(h * dv, d_model);
 }
@@ -24,7 +24,7 @@ void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, in
     Mat2D::multiply(q, *Wq[index], *Q[index]);
     Mat2D::multiply(k, *Wk[index], *K[index]);
     Mat2D::multiply(v, *Wv[index], *V[index]);
-    Mat2D attention_matrix(n, n), K_T(dk, n);
+    Mat2D attention_matrix(n, m), K_T(dk, m);
     Mat2D::transpose(*K[index], K_T);
     Mat2D::multiply(*Q[index], K_T, attention_matrix);
     attention_matrix /= sqrt(d_model);

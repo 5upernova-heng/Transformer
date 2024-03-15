@@ -7,6 +7,10 @@
 #include <string>
 #include <format>
 
+std::string pair2String(int a, int b);
+
+std::string pair2String(const std::pair<int, int> &p);
+
 class Mat2D {
 public:
     Mat2D();
