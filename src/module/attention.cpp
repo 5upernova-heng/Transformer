@@ -9,6 +9,7 @@ Attention::Attention(int n, int m, int d_model, int dk, int dv, int h)
         Q.push_back(std::make_shared<Mat2D>(n, dk));
         K.push_back(std::make_shared<Mat2D>(m, dk));
         V.push_back(std::make_shared<Mat2D>(m, dv));
+        outputs.push_back(std::make_shared<Mat2D>(n, dv));
     }
     Wo = std::make_shared<Mat2D>(h * dv, d_model);
 }
@@ -27,7 +28,7 @@ void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, in
     Mat2D attention_matrix(n, m), K_T(dk, m);
     Mat2D::transpose(*K[index], K_T);
     Mat2D::multiply(*Q[index], K_T, attention_matrix);
-    attention_matrix /= sqrt(d_model);
+    attention_matrix /= sqrt(dk);
     attention_matrix.softmax();
     Mat2D::multiply(attention_matrix, *V[index], out);
     if (mask)
@@ -39,9 +40,7 @@ void Attention::MultiheadAttention(Mat2D &input, Mat2D &output, bool mask) {
 }
 
 void Attention::MultiheadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &output, bool mask) {
-    std::vector<std::shared_ptr<Mat2D>> outputs;
     for (int i = 0; i < h; i++) {
-        outputs.push_back(std::make_shared<Mat2D>(n, dv));
         SingleHeadAttention(q, k, v, *outputs[i], i, mask);
     }
     Mat2D concatenated(n, dv * h);

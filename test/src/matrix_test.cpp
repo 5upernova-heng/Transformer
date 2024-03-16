@@ -92,9 +92,15 @@ namespace {
                     {0, 0, 0},
                     {0, 0, 0}});
         mat1.mask();
-        auto inf = (double) INFINITY;
+        auto inf = (double) MASK_INF;
         EXPECT_EQ(mat1, Mat2D({{0, -inf, -inf},
                                {0, 0,    -inf},
                                {0, 0,    0}}));
+    }
+
+    TEST(MatrixTest, LayerNormTest) {
+        Mat2D mat1({{1, 2, 3, 4}});
+        mat1.layerNorm();
+        EXPECT_EQ(mat1, Mat2D({{-1.3416407, -0.4472136, 0.4472136, 1.3416407}}));
     }
 }

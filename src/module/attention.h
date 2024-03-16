@@ -6,7 +6,7 @@
 class Attention {
 public:
     int n, m, d_model, dk, dv, h;
-    std::vector<std::shared_ptr<Mat2D>> Wq, Wk, Wv, Q, K, V;
+    std::vector<std::shared_ptr<Mat2D>> Wq, Wk, Wv, Q, K, V, outputs;
     std::shared_ptr<Mat2D> Wo;
 
     Attention(int n, int m, int d_model, int dk, int dv, int h);

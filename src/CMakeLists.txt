@@ -4,7 +4,10 @@ project(Transformer)
 add_subdirectory(matrix)
 add_subdirectory(module)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp
+        utils.cpp
+        utils.h
+        main.h)
 
 add_executable(Transformer ${SOURCE_FILES})
 target_link_libraries(Transformer matrix module)

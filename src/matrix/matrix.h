@@ -1,6 +1,8 @@
 #ifndef C_TRANSFORMER_MATRIX_H
 #define C_TRANSFORMER_MATRIX_H
 #define POSITIONAL_ENCODING_BASE 10000
+#define WEIGHT_INIT 0.001
+#define MASK_INF 10000
 
 #include <algorithm>
 #include <vector>

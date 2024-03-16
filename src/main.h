@@ -1,12 +1,16 @@
-//
-// Created by Konstantin Gredeskoul on 10/7/18.
-//
+#ifndef TRANSFORMER_MAIN_H
+#define TRANSFORMER_MAIN_H
 
-#ifndef PROJECT_MAIN_H
-#define PROJECT_MAIN_H
+#include <iostream>
 
-static const char *const HEADER = "\nDivider © 2018 Monkey Claps Inc.\n\n";
-static const char *const USAGE = "Usage:\n\tdivider <numerator> <denominator>\n\nDescription:\n\tComputes the result of a fractional division,\n\tand reports both the result and the remainder.\n";
+#include "utils.h"
+#include "matrix/matrix.h"
+#include "module/attention.h"
+#include "module/feedforward.h"
 
 
-#endif //PROJECT_MAIN_H
+void encoder(Mat2D &input, Mat2D &output);
+
+void decoder(Mat2D &input, Mat2D &output, Mat2D &encoder_out);
+
+#endif //TRANSFORMER_MAIN_H

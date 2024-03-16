@@ -157,6 +157,11 @@ void Mat2D::transpose(const Mat2D &mat1, const Mat2D &dest) {
                pair2String(mat1.sizes.second, mat1.sizes.first).c_str(),
                pair2String(dest.sizes).c_str());
     }
+    for (int i = 0; i < mat1.sizes.first; i++) {
+        for (int j = 0; j < mat1.sizes.second; j++) {
+            dest.data[j][i] = mat1.data[i][j];
+        }
+    }
 }
 
 void Mat2D::initData() {
@@ -166,7 +171,7 @@ void Mat2D::initData() {
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            data[i][j] = 0;
+            data[i][j] = WEIGHT_INIT;
         }
     }
 }
@@ -200,6 +205,7 @@ void normalize(const std::shared_ptr<double[]> &data, int length) {
     for (int i = 0; i < length; i++) {
         var += pow((data[i] - mean), 2);
     }
+    var /= length;
     double std = sqrt(var);
     for (int i = 0; i < length; i++) {
         data[i] = (data[i] - mean) / std;
@@ -215,7 +221,7 @@ void Mat2D::layerNorm() const {
 void Mat2D::mask() const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = i + 1; j < sizes.second; j++) {
-            data[i][j] = -(double) 10000;
+            data[i][j] = -(double) MASK_INF;
         }
     }
 }
@@ -227,6 +233,9 @@ void Mat2D::softmax() const {
     for (int i = 0; i < sizes.first; i++) {
         double sum = 0;
         for (int j = 0; j < sizes.second; j++) {
+            if (data[i][j] > 100) {
+                printf("Warning: matrix element greater than 100, softmax might not work\n");
+            }
             data[i][j] = exp(data[i][j]);
             sum += data[i][j];
         }
