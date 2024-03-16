@@ -25,9 +25,9 @@ void read_matrix(const std::string &filename, const std::shared_ptr<Mat2D> &mat)
     m = std::stoi(matches[1]);
     n = std::stoi(matches[2]);
     mat->sizes = std::make_pair(m, n);
-    mat->data = std::make_shared<std::shared_ptr<double[]>[]>(m);
+    mat->data = std::make_shared<std::shared_ptr<float[]>[]>(m);
     for (int i = 0; i < m; i++) {
-        mat->data[i] = std::make_shared<double[]>(n);
+        mat->data[i] = std::make_shared<float[]>(n);
     }
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {

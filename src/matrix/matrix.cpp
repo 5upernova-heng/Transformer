@@ -23,7 +23,7 @@ Mat2D::Mat2D(const std::pair<int, int> &sizes) : sizes(sizes) {
     initData();
 }
 
-Mat2D::Mat2D(std::initializer_list<std::initializer_list<double>> array) {
+Mat2D::Mat2D(std::initializer_list<std::initializer_list<float>> array) {
     sizes.first = (int) array.size();
     sizes.second = (int) array.begin()->size();
     for (auto &row: array) {
@@ -36,7 +36,7 @@ Mat2D::Mat2D(std::initializer_list<std::initializer_list<double>> array) {
     int i = 0;
     for (auto &row: array) {
         int j = 0;
-        for (double e: row) {
+        for (float e: row) {
             data[i][j++] = e;
         }
         i++;
@@ -165,9 +165,9 @@ void Mat2D::transpose(const Mat2D &mat1, const Mat2D &dest) {
 }
 
 void Mat2D::initData() {
-    data = std::make_shared<std::shared_ptr<double[]>[]>(sizes.first);
+    data = std::make_shared<std::shared_ptr<float[]>[]>(sizes.first);
     for (int i = 0; i < sizes.first; i++) {
-        data[i] = std::make_shared<double[]>(sizes.second);
+        data[i] = std::make_shared<float[]>(sizes.second);
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
@@ -178,10 +178,10 @@ void Mat2D::initData() {
 
 
 void Mat2D::positionalEncode() const {
-    auto *bias = new double[sizes.second];
+    auto *bias = new float[sizes.second];
     for (int i = 0; i < sizes.second; i++) {
         int i_ = i / 2 * 2;
-        bias[i] = pow(POSITIONAL_ENCODING_BASE, (double) i_ / sizes.second);
+        bias[i] = pow(POSITIONAL_ENCODING_BASE, (float) i_ / sizes.second);
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
@@ -195,18 +195,18 @@ void Mat2D::positionalEncode() const {
     delete[] bias;
 }
 
-void normalize(const std::shared_ptr<double[]> &data, int length) {
-    double sum = 0;
+void normalize(const std::shared_ptr<float[]> &data, int length) {
+    float sum = 0;
     for (int i = 0; i < length; i++) {
         sum += data[i];
     }
-    double mean = sum / length;
-    double var = 0;
+    float mean = sum / length;
+    float var = 0;
     for (int i = 0; i < length; i++) {
         var += pow((data[i] - mean), 2);
     }
     var /= length;
-    double std = sqrt(var);
+    float std = sqrt(var);
     for (int i = 0; i < length; i++) {
         data[i] = (data[i] - mean) / std;
     }
@@ -221,7 +221,7 @@ void Mat2D::layerNorm() const {
 void Mat2D::mask() const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = i + 1; j < sizes.second; j++) {
-            data[i][j] = -(double) MASK_INF;
+            data[i][j] = -(float) MASK_INF;
         }
     }
 }
@@ -231,12 +231,16 @@ void Mat2D::mask() const {
  */
 void Mat2D::softmax() const {
     for (int i = 0; i < sizes.first; i++) {
-        double sum = 0;
+        float sum = 0;
         for (int j = 0; j < sizes.second; j++) {
             if (data[i][j] > 100) {
                 printf("Warning: matrix element greater than 100, softmax might not work\n");
             }
-            data[i][j] = exp(data[i][j]);
+            if (data[i][j] < -100) {
+                data[i][j] = 0;
+            } else {
+                data[i][j] = exp(data[i][j]);
+            }
             sum += data[i][j];
         }
         for (int j = 0; j < sizes.second; j++) {
@@ -248,12 +252,12 @@ void Mat2D::softmax() const {
 void Mat2D::ReLU() const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            data[i][j] = std::max(data[i][j], 0.0);
+            data[i][j] = std::max(data[i][j], (float) 0.0);
         }
     }
 }
 
-void Mat2D::operator+=(double bias) const {
+void Mat2D::operator+=(float bias) const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
             data[i][j] += bias;
@@ -261,7 +265,7 @@ void Mat2D::operator+=(double bias) const {
     }
 }
 
-void Mat2D::operator*=(double scale) const {
+void Mat2D::operator*=(float scale) const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
             data[i][j] *= scale;
@@ -269,7 +273,7 @@ void Mat2D::operator*=(double scale) const {
     }
 }
 
-void Mat2D::operator/=(double scale) const {
+void Mat2D::operator/=(float scale) const {
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
             data[i][j] /= scale;
@@ -284,7 +288,7 @@ bool Mat2D::operator==(const Mat2D &mat) const {
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            if (abs(data[i][j] - mat.data[i][j]) > 1e-6) {
+            if (abs(data[i][j] - mat.data[i][j]) > 1e-7) {
                 return false;
             }
         }

@@ -39,12 +39,12 @@ void decoder(Mat2D &input, Mat2D &output, Mat2D &encoder_out) {
     Mat2D temp(n, d_model);
     for (int i = 0; i < N; i++) {
         // attention
-        self_attention.MultiheadAttention(input, temp, false);
+        self_attention.MultiheadAttention(input, temp, true);
         // add & norm
         Mat2D::add(input, temp, input);
         input.layerNorm();
         // masked attention
-        cross_attention.MultiheadAttention(input, encoder_out, encoder_out, temp, true);
+        cross_attention.MultiheadAttention(input, encoder_out, encoder_out, temp, false);
         // add & norm
         Mat2D::add(input, temp, input);
         input.layerNorm();
@@ -63,18 +63,22 @@ int main() {
     auto source = std::make_shared<Mat2D>();
     auto target = std::make_shared<Mat2D>();
     auto enc_src = std::make_shared<Mat2D>();
+    auto output = std::make_shared<Mat2D>();
     read_matrix("source", source);
-    read_matrix("target", target);
-    read_matrix("enc_src", enc_src);
-    Mat2D encoder_output(source->sizes.first, source->sizes.second);
-    Mat2D decoder_output(target->sizes.first, target->sizes.second);
-    printf("Source: %s\n", pair2String(source->sizes).c_str());
-    printf("Target: %s\n", pair2String(target->sizes).c_str());
-    encoder(*source, encoder_output);
-    write_matrix("enc_src_c", encoder_output);
-    std::cout << (encoder_output == *enc_src) << std::endl;
-    decoder(*target, decoder_output, encoder_output);
-//    decoder_output.print(6);
+    write_matrix("source_c", *source);
+//    read_matrix("target", target);
+//    read_matrix("enc_src", enc_src);
+//    read_matrix("output", output);
+//    Mat2D encoder_output(source->sizes.first, source->sizes.second);
+//    Mat2D decoder_output(target->sizes.first, target->sizes.second);
+//    printf("Source: %s\n", pair2String(source->sizes).c_str());
+//    printf("Target: %s\n", pair2String(target->sizes).c_str());
+//    encoder(*source, encoder_output);
+//    write_matrix("enc_src_c", encoder_output);
+//    std::cout << (encoder_output == *enc_src) << std::endl;
+//    decoder(*target, decoder_output, encoder_output);
+//    write_matrix("output_c", decoder_output);
+//    std::cout << (decoder_output == *output) << std::endl;
     return 0;
 }
 

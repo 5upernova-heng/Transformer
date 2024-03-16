@@ -23,7 +23,7 @@ public:
 
     explicit Mat2D(const std::pair<int, int> &sizes);
 
-    Mat2D(std::initializer_list<std::initializer_list<double>> array);
+    Mat2D(std::initializer_list<std::initializer_list<float>> array);
 
     ~Mat2D();
 
@@ -51,16 +51,16 @@ public:
 
     void print(int n = 2) const;
 
-    void operator+=(double bias) const;
+    void operator+=(float bias) const;
 
-    void operator*=(double scale) const;
+    void operator*=(float scale) const;
 
-    void operator/=(double scale) const;
+    void operator/=(float scale) const;
 
     bool operator==(const Mat2D &mat) const;
 
     std::pair<int, int> sizes;
-    std::shared_ptr<std::shared_ptr<double[]>[]> data;
+    std::shared_ptr<std::shared_ptr<float[]>[]> data;
 };
 
 #endif //C_TRANSFORMER_MATRIX_H

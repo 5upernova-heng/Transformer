@@ -29,10 +29,10 @@ void Attention::SingleHeadAttention(Mat2D &q, Mat2D &k, Mat2D &v, Mat2D &out, in
     Mat2D::transpose(*K[index], K_T);
     Mat2D::multiply(*Q[index], K_T, attention_matrix);
     attention_matrix /= sqrt(dk);
+    if (mask)
+        attention_matrix.mask();
     attention_matrix.softmax();
     Mat2D::multiply(attention_matrix, *V[index], out);
-    if (mask)
-        out.mask();
 }
 
 void Attention::MultiheadAttention(Mat2D &input, Mat2D &output, bool mask) {
