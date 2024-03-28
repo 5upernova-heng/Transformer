@@ -1,8 +1,8 @@
 #ifndef TRANSFORMER_MAIN_H
 #define TRANSFORMER_MAIN_H
 
+#include <torch/torch.h>
 #include <iostream>
-
 #include "utils.h"
 #include "matrix/matrix.h"
 #include "module/attention.h"
