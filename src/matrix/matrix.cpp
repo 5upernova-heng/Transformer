@@ -1,11 +1,11 @@
 #include "matrix.h"
 
 std::string pair2String(int a, int b) {
-    return "(" + std::to_string(a) + ", " + std::to_string(b) + ")";
+    return std::format("({}, {})", a, b);
 }
 
 std::string pair2String(const std::pair<int, int> &p) {
-    return "(" + std::to_string(p.first) + ", " + std::to_string(p.second) + ")";
+    return std::format("({}, {})", p.first, p.second);
 }
 
 Mat2D::Mat2D() = default;

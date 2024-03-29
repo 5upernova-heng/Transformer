@@ -15,13 +15,4 @@ set(SOURCE_FILES main.cpp
         main.h)
 
 add_executable(Transformer ${SOURCE_FILES})
-target_link_libraries(Transformer matrix module "${TORCH_LIBRARIES}")
-
-if (MSVC)
-    file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-    add_custom_command(TARGET Transformer
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${TORCH_DLLS}
-            $<TARGET_FILE_DIR:Transformer>)
-endif (MSVC)
+target_link_libraries(Transformer module matrix "${TORCH_LIBRARIES}")

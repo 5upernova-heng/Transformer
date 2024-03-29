@@ -1,5 +1,12 @@
 #include "utils.h"
 
+std::string pair2String(int a, int b) {
+    return std::format("({}, {})", a, b);
+}
+
+std::string pair2String(const std::pair<int, int> &p) {
+    return std::format("({}, {})", p.first, p.second);
+}
 
 void read_matrix(const std::string &filename, const std::shared_ptr<Mat2D> &mat) {
     std::ifstream file(TENSOR_PATH + filename);

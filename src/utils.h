@@ -6,8 +6,11 @@
 #include <iomanip>
 #include <fstream>
 #include <regex>
-#include "matrix/matrix.h"
+#include "matrix.h"
 
+std::string pair2String(int a, int b);
+
+std::string pair2String(const std::pair<int, int> &p);
 
 void read_matrix(const std::string &filename, const std::shared_ptr<Mat2D> &mat);
 
