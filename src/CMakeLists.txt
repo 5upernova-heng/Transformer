@@ -5,7 +5,6 @@ add_subdirectory(matrix)
 add_subdirectory(module)
 
 find_package(Torch REQUIRED)
-find_package(BLAS REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 

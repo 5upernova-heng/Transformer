@@ -101,42 +101,32 @@ std::shared_ptr<Mat2D> tensor2mat2(const torch::Tensor& tensor) {
     return mat;
 }
 
+std::shared_ptr<Mat2D> pt2matrix(const std::string& filename) {
+    return tensor2mat2(pt2tensor(filename));
+}
+
 int main() {
-    auto a = pt2tensor("a.pt");
-    auto b = pt2tensor("b.pt");
-    auto c = pt2tensor("c.pt");
-    torch::Tensor dest = torch::matmul(a, b);
-    std::cout << torch::all(dest.eq(c)) << std::endl;
+    // auto mat1 = pt2matrix("a.pt");
+    // auto mat2 = pt2matrix("b.pt"); 
+    // auto mat3 = pt2matrix("c.pt");
+    
+    // Mat2D mat_dest(mat1->sizes.first, mat2->sizes.second);
+    // Mat2D::matmul(*mat1, *mat2, mat_dest);
+    // std::cout << (*mat3 == mat_dest) << std::endl;
 
-    auto mat1 = tensor2mat(a);
-    auto mat2 = tensor2mat(a);
-//    auto mat3 = tensor2mat(c);
-//    Mat2D mat_dest(mat1->sizes);
-//    Mat2D::multiply(*mat1, *mat2, mat_dest);
-//    print_matrix(*mat1, 3, 3, 4);
-//    print_matrix(*mat2, 3, 3, 4);
-//    print_matrix(*mat3, 3, 3, 4);
-//    print_matrix(mat_dest, 3, 3, 4);
-    std::cout << (*mat1 == *mat2) << std::endl;
+    auto source = pt2matrix("source.pt");
+    auto target = pt2matrix("target.pt");
+    auto enc_src = pt2matrix("enc_src.pt");
+    auto output = pt2matrix("output.pt");
 
+    Mat2D encoder_output(source->sizes.first, source->sizes.second);
+    Mat2D decoder_output(target->sizes.first, target->sizes.second);
+    printf("Source: %s\n", pair2String(source->sizes).c_str());
+    printf("Target: %s\n", pair2String(target->sizes).c_str());
+    encoder(*source, encoder_output);
+    std::cout << (encoder_output == *enc_src) << std::endl;
+    decoder(*target, decoder_output, encoder_output);
+    std::cout << (decoder_output == *output) << std::endl;
     return 0;
-//    auto source = pt2matrix("source.pt");
-//    auto target = pt2matrix("target.pt");
-//    auto enc_src = pt2matrix("enc_src.pt");
-//    auto output = pt2matrix("output.pt");
-//    read_matrix("source", source);
-//    write_matrix("source_c", *source);
-//    read_matrix("target", target);
-//    read_matrix("enc_src", enc_src);
-//    read_matrix("output", output);
-//    Mat2D encoder_output(source->sizes.first, source->sizes.second);
-//    Mat2D decoder_output(target->sizes.first, target->sizes.second);
-//    printf("Source: %s\n", pair2String(source->sizes).c_str());
-//    printf("Target: %s\n", pair2String(target->sizes).c_str());
-//    encoder(*source, encoder_output);
-//    std::cout << (encoder_output == *enc_src) << std::endl;
-//    decoder(*target, decoder_output, encoder_output);
-//    std::cout << (decoder_output == *output) << std::endl;
-//    return 0;
 }
 

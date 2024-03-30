@@ -76,15 +76,42 @@ void Mat2D::multiply(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest) {
                pair2String(dest.sizes).c_str());
         return;
     }
+    Mat2D::matmul(mat1, mat2, dest);
+}
 
-    for (int i = 0; i < dest.sizes.first; i++) {
-        for (int j = 0; j < dest.sizes.second; j++) {
-            dest.data[i][j] = 0;
-            for (int k = 0; k < mat1.sizes.second; k++) {
-                dest.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
-            }
+void copyout(const Mat2D &mat, float *data) {
+    for (int i = 0; i < mat.sizes.first; i++) {
+        for (int j = 0; j < mat.sizes.second; j++) {
+            data[i * mat.sizes.second + j] = mat.data[i][j];
         }
     }
+}
+
+void copyback(const Mat2D &mat, float *data) {
+    for (int i = 0; i < mat.sizes.first; i++) {
+        for (int j = 0; j < mat.sizes.second; j++) {
+            mat.data[i][j] = data[i * mat.sizes.second + j];
+        }
+    }
+}
+
+void Mat2D::matmul(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest) {
+    int row = mat1.sizes.first;
+    float* data1, *data2, *dest_data;
+    data1 = (float *) malloc(sizeof(float) * mat1.sizes.first * mat1.sizes.second);
+    data2 = (float *) malloc(sizeof(float) * mat2.sizes.first * mat2.sizes.second);
+    dest_data = (float *) malloc(sizeof(float) * dest.sizes.first * dest.sizes.second);
+    copyout(mat1, data1);
+    copyout(mat2, data2);
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+            mat1.sizes.first, mat2.sizes.second, mat1.sizes.second, 1.0f,
+            data1, mat1.sizes.second,
+            data2, mat2.sizes.second,
+            0.0f, dest_data, mat2.sizes.second);
+    copyback(dest, dest_data);
+    free(data1);
+    free(data2);
+    free(dest_data);
 }
 
 /*
@@ -288,7 +315,7 @@ bool Mat2D::operator==(const Mat2D &mat) const {
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            if (abs(data[i][j] - mat.data[i][j]) > 1e-7) {
+            if (abs(data[i][j] - mat.data[i][j]) > 1e-8) {
                 return false;
             }
         }

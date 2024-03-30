@@ -4,7 +4,15 @@
 #define WEIGHT_INIT 0.001
 #define MASK_INF 10000
 
+extern "C"
+{
+#include <cblas.h>
+}
+
 #include <algorithm>
+#include <cmath>
+#include <format>
+#include <memory>
 #include <vector>
 #include <string>
 #include <utility>
@@ -30,6 +38,8 @@ public:
     static void add(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
 
     static void multiply(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
+
+    static void matmul(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
 
     static void concat(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
 

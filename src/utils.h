@@ -1,6 +1,6 @@
 #ifndef TRANSFORMER_UTILS_H
 #define TRANSFORMER_UTILS_H
-#define TENSOR_PATH std::string("../../python/pytorch-transformer/data/")
+#define TENSOR_PATH std::string("./python/pytorch-transformer/data/")
 
 #include <iostream>
 #include <iomanip>
