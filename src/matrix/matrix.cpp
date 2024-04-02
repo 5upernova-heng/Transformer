@@ -63,6 +63,24 @@ void Mat2D::add(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest) {
     }
 }
 
+void Mat2D::minus(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest) {
+    if (mat1.sizes != mat2.sizes) {
+        printf("[Add] Two matrix operands have different size: %s, %s\n",
+               pair2String(mat1.sizes).c_str(), pair2String(mat2.sizes).c_str());
+        return;
+    }
+    if (mat1.sizes != dest.sizes) {
+        printf("[Add] Unmatched size of dest: expect %s, got %s\n",
+               pair2String(mat1.sizes).c_str(), pair2String(dest.sizes).c_str());
+        return;
+    }
+    for (int i = 0; i < mat1.sizes.first; i++) {
+        for (int j = 0; j < mat1.sizes.second; j++) {
+            dest.data[i][j] = mat1.data[i][j] - mat2.data[i][j];
+        }
+    }
+}
+
 void Mat2D::multiply(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest) {
     if (mat1.sizes.second != mat2.sizes.first) {
         printf("[Multiply] Matrix sizes are not match, can not perform multiplication.\n");
@@ -223,17 +241,17 @@ void Mat2D::positionalEncode() const {
 }
 
 void normalize(const std::shared_ptr<float[]> &data, int length) {
-    float sum = 0;
+    double sum = 0.0f;
     for (int i = 0; i < length; i++) {
         sum += data[i];
     }
-    float mean = sum / length;
-    float var = 0;
+    double mean = sum / (double) length;
+    double var = 0;
     for (int i = 0; i < length; i++) {
-        var += pow((data[i] - mean), 2);
+        var += (data[i] - mean) * (data[i] - mean);
     }
-    var /= length;
-    float std = sqrt(var);
+    var /= (double) length;
+    double std = sqrt(var);
     for (int i = 0; i < length; i++) {
         data[i] = (data[i] - mean) / std;
     }
@@ -315,7 +333,7 @@ bool Mat2D::operator==(const Mat2D &mat) const {
     }
     for (int i = 0; i < sizes.first; i++) {
         for (int j = 0; j < sizes.second; j++) {
-            if (abs(data[i][j] - mat.data[i][j]) > 1e-8) {
+            if (std::abs(data[i][j] - mat.data[i][j]) > 1e-6) {
                 return false;
             }
         }

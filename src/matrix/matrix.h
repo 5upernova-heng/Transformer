@@ -1,7 +1,7 @@
 #ifndef C_TRANSFORMER_MATRIX_H
 #define C_TRANSFORMER_MATRIX_H
 #define POSITIONAL_ENCODING_BASE 10000
-#define WEIGHT_INIT 0.001
+#define WEIGHT_INIT 0.01
 #define MASK_INF 10000
 
 extern "C"
@@ -37,6 +37,8 @@ public:
 
     static void add(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
 
+    static void minus(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
+
     static void multiply(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
 
     static void matmul(const Mat2D &mat1, const Mat2D &mat2, Mat2D &dest);
@@ -48,6 +50,8 @@ public:
     static void transpose(const Mat2D &mat1, const Mat2D &dest);
 
     void initData();
+
+    float max() const;
 
     void positionalEncode() const;
 
