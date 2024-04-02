@@ -46,5 +46,5 @@ include/divisible/*
 ## Local
 
 .idea/
-
+build.sh
 build/**/*
